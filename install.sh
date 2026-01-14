@@ -11,6 +11,10 @@ if ! command -v mise &> /dev/null; then
     exit 1
 fi
 
+# Trust mise config file (suppress warning if already trusted)
+echo "Trusting mise config..."
+mise trust 2>&1 | grep -v "No untrusted config files found" || true
+
 # Install tools from mise.toml
 echo "Installing tools via mise..."
 mise install --yes
