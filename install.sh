@@ -11,11 +11,18 @@ if ! command -v mise &> /dev/null; then
     exit 1
 fi
 
+# Link global mise config
+echo "Linking mise config..."
+MISE_CONFIG="${HOME}/.config/mise/config.toml"
+mkdir -p "$(dirname "$MISE_CONFIG")"
+ln -sf "${SCRIPT_DIR}/.config/mise/config.toml" "$MISE_CONFIG"
+echo "  Linked: $MISE_CONFIG"
+
 # Trust mise config file (suppress warning if already trusted)
 echo "Trusting mise config..."
 mise trust 2>&1 | grep -v "No untrusted config files found" || true
 
-# Install tools from mise.toml
+# Install tools from global mise config
 echo "Installing tools via mise..."
 mise install --yes
 
