@@ -1,0 +1,3 @@
+
+# Local justfile runner
+alias ljust='just --justfile=.local.Justfile'

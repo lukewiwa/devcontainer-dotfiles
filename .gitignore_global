@@ -1,0 +1,51 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editors
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Compiled
+*.pyc
+*.pyo
+__pycache__/
+*.class
+*.o
+*.so
+*.dylib
+
+# Env files (keep these out of repos)
+.env
+.env.local
+.env.*.local
+
+# Node (in case you're not using docker for node)
+node_modules/
+
+# Python
+.venv/
+venv/
+*.egg-info/
+
+# Misc
+*.log
+*.bak
+*.tmp
+
+# Local scripts for only me
+.local.Makefile
+.local.Justfile
+.local.scripts/

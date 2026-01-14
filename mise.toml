@@ -1,0 +1,4 @@
+[tools]
+"github:casey/just" = "latest"
+"github:sharkdp/bat" = "latest"
+neovim = "latest"

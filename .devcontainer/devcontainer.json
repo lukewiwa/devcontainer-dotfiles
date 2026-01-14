@@ -1,0 +1,14 @@
+{
+    "name": "Dev Container Dotfiles",
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh"
+            },
+            "extensions": [
+                "tamasfe.even-better-toml"
+            ]
+        }
+    }
+}
