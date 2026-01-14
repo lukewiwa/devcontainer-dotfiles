@@ -23,7 +23,7 @@ Add this to your VS Code settings (user settings, not workspace):
 
 ```json
 {
-    "dotfiles.repository": "lukewiwa/devcontainer-dotfiles",
+    "dotfiles.repository": "https://github.com/lukewiwa/devcontainer-dotfiles.git",
     "dotfiles.installCommand": "install.sh"
 }
 ```
