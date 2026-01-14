@@ -1,3 +1,27 @@
 
 # Local justfile runner
 alias ljust='just --justfile=.local.Justfile'
+# Neovim
+alias vim='nvim'
+alias vi='nvim'
+
+# lazygit & lazydocker
+alias lg='lazygit'
+alias ld='lazydocker'
+
+# fzf + bat (better file previewing)
+alias fzfp='fzf --preview "bat --color=always {}"'
+
+# jq pretty printing (already pretty, but useful shorthand)
+alias jq='jq -C'
+
+# bat as cat replacement for colorized output
+alias cat='bat'
+
+# glow for markdown
+alias mdless='glow'
+
+# Common compound tasks
+alias nvimcfg='nvim ~/.config/nvim'
+alias zshcfg='nvim ~/.zshrc'
+alias aliascfg='nvim ~/.zsh_aliases'

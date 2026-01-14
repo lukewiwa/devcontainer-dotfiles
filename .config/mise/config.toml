@@ -1,4 +1,9 @@
 [tools]
-"github:casey/just" = "latest"
-"github:sharkdp/bat" = "latest"
+bat = "latest"
+fzf = "latest"
+glow = "latest"
+jq = "latest"
+just = "latest"
+lazydocker = "latest"
+lazygit = "latest"
 neovim = "latest"
