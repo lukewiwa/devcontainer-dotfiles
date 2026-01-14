@@ -32,7 +32,7 @@ That's it. VS Code will clone and run the install script automatically when crea
 
 ## Adding tools
 
-Edit `mise.toml` to add new tools:
+Edit `.config/mise/config.toml` to add new tools:
 
 ```toml
 [tools]
@@ -40,3 +40,7 @@ Edit `mise.toml` to add new tools:
 ```
 
 The `github` backend works with any tool that publishes binaries to GitHub releases. For tools not on GitHub, mise also supports `aqua` and `cargo` backends.
+
+### How it works
+
+The install script symlinks `.config/mise/config.toml` to `~/.config/mise/config.toml`, making it the **global mise config**. This means your tools are available in all projects and directories within the dev container, not just when you're in a specific project directory.
