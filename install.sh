@@ -29,8 +29,8 @@ mise install --yes
 # Install just completions
 echo "Installing just completions..."
 if command -v just &> /dev/null; then
-    mkdir -p "${HOME}/.oh-my-zsh/custom/completions"
-    just --completions zsh > "${HOME}/.oh-my-zsh/custom/completions/_just"
+    mkdir -p "${HOME}/.oh-my-zsh/completions"
+    just --completions zsh > "${HOME}/.oh-my-zsh/completions/_just"
     echo "  Installed just completions"
 fi
 
@@ -75,9 +75,6 @@ setup_shell() {
 
 # devcontainer-dotfiles
 export PATH="\${HOME}/.local/bin:\${PATH}"
-
-# oh-my-zsh completions
-fpath=(\${HOME}/.oh-my-zsh/custom/completions \$fpath)
 
 # mise
 eval "\$(mise activate zsh)"
