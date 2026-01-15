@@ -1,6 +1,4 @@
 
-# Local justfile runner
-alias ljust='just --justfile=.local.Justfile'
 # Neovim
 alias vim='nvim'
 alias vi='nvim'
@@ -14,9 +12,6 @@ alias fzfp='fzf --preview "bat --color=always {}"'
 
 # jq pretty printing (already pretty, but useful shorthand)
 alias jq='jq -C'
-
-# bat as cat replacement for colorized output
-alias cat='bat'
 
 # glow for markdown
 alias mdless='glow'

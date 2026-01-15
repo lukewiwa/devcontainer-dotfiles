@@ -26,6 +26,14 @@ mise trust 2>&1 | grep -v "No untrusted config files found" || true
 echo "Installing tools via mise..."
 mise install --yes
 
+# Install just completions
+echo "Installing just completions..."
+if command -v just &> /dev/null; then
+    mkdir -p "${HOME}/.oh-my-zsh/custom/completions"
+    just --completions zsh > "${HOME}/.oh-my-zsh/custom/completions/_just"
+    echo "  Installed just completions"
+fi
+
 # Symlink dotfiles
 echo "Linking dotfiles..."
 
@@ -67,6 +75,9 @@ setup_shell() {
 
 # devcontainer-dotfiles
 export PATH="\${HOME}/.local/bin:\${PATH}"
+
+# oh-my-zsh completions
+fpath=(\${HOME}/.oh-my-zsh/custom/completions \$fpath)
 
 # mise
 eval "\$(mise activate zsh)"

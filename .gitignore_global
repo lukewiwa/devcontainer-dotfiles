@@ -46,6 +46,6 @@ venv/
 *.tmp
 
 # Local scripts for only me
+.justfile
 .local.Makefile
-.local.Justfile
 .local.scripts/
