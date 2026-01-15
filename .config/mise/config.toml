@@ -1,5 +1,6 @@
 [tools]
 bat = "latest"
+delta = "latest"
 fzf = "latest"
 glow = "latest"
 jq = "latest"
