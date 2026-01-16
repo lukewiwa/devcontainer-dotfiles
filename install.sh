@@ -48,16 +48,10 @@ link_file() {
     fi
 }
 
-link_file ".zsh_aliases" ".zsh_aliases"
-link_file ".gitconfig" ".gitconfig"
-
-# Link global gitignore
-GIG="$HOME/.config/git/ignore"
-if [ -f "$SCRIPT_DIR/.gitignore_global" ]; then
-    mkdir -p "$(dirname "$GIG")"
-    ln -sf "$SCRIPT_DIR/.gitignore_global" "$GIG"
-    echo "  Linked: $GIG"
-fi
+link_file ".zsh_aliases"
+link_file ".gitconfig"
+link_file ".gitignore_global" ".config/git/ignore"
+link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
 
 # Setup zsh integration
 setup_shell() {
