@@ -25,6 +25,8 @@ mise trust 2>&1 | grep -v "No untrusted config files found" || true
 # Install tools from global mise config
 echo "Installing tools via mise..."
 mise install --yes
+# Activate for current shell session
+eval "$(mise activate bash)"
 
 # Install just completions
 echo "Installing just completions..."
