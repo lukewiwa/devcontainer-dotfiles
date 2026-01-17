@@ -32,6 +32,8 @@ if command -v just &> /dev/null; then
     mkdir -p "${HOME}/.oh-my-zsh/completions"
     just --completions zsh > "${HOME}/.oh-my-zsh/completions/_just"
     echo "  Installed just completions"
+else
+    echo "  just not found, skipping completions"
 fi
 
 # Symlink dotfiles
