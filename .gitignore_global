@@ -18,6 +18,8 @@ Desktop.ini
 *.sublime-workspace
 *.sublime-project
 
+.claude/settings.local.json
+
 # Compiled
 *.pyc
 *.pyo
