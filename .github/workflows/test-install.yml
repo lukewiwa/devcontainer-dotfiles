@@ -33,6 +33,8 @@ jobs:
           touch ~/.zshrc
 
       - name: Run installation script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           bash install.sh
 
@@ -42,6 +44,8 @@ jobs:
           mise --version
 
       - name: Verify tools are installed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           export PATH="${HOME}/.local/bin:${PATH}"
           eval "$(mise activate bash)"
