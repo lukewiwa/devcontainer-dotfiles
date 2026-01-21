@@ -22,9 +22,9 @@ The script will automatically:
 
 ## Dev Container Setup
 
-### Prerequisites
+### Prerequisites (Optional)
 
-Add these features to your VS Code user settings in `dev.containers.defaultFeatures`:
+For faster setup in dev containers, you can pre-install mise via features in your VS Code user settings:
 
 ```json
 {
@@ -36,6 +36,8 @@ Add these features to your VS Code user settings in `dev.containers.defaultFeatu
   }
 }
 ```
+
+If mise is not pre-installed, the install script will automatically install it.
 
 ### VS Code Dotfiles Integration
 
@@ -65,10 +67,12 @@ The `github` backend works with any tool that publishes binaries to GitHub relea
 
 The install script:
 1. Detects your operating system (macOS or Linux)
-2. Installs mise if not already present (on macOS via the official installer)
+2. Installs mise if not already present (via the official installer)
 3. Symlinks `.config/mise/config.toml` to `~/.config/mise/config.toml` as your **global mise config**
 4. Installs all tools defined in the config
 5. Symlinks dotfiles (`.gitconfig`, `.zsh_aliases`, etc.) to your home directory
 6. Configures zsh integration for mise and aliases
 
 Your tools are available globally in all projects and directories, not just in specific project directories.
+
+**Note**: The script now installs mise automatically on all platforms, so you don't need to pre-install it or use the dev container feature. However, using the mise feature in dev containers is still recommended as it's faster.

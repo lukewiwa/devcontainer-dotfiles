@@ -23,26 +23,18 @@ echo "Detected OS: $OS_NAME"
 # Install mise if not present
 if ! command -v mise &> /dev/null; then
     echo "mise not found, installing..."
+    echo "Installing mise via official installer..."
+    curl https://mise.run | sh
 
-    if [ "$OS_NAME" = "macOS" ]; then
-        # Install mise on macOS
-        echo "Installing mise via official installer..."
-        curl https://mise.run | sh
+    # Add mise to PATH for current session
+    export PATH="${HOME}/.local/bin:${PATH}"
 
-        # Add mise to PATH for current session
-        export PATH="${HOME}/.local/bin:${PATH}"
-
-        # Verify installation
-        if ! command -v mise &> /dev/null; then
-            echo "ERROR: mise installation failed"
-            exit 1
-        fi
-        echo "mise installed successfully"
-    else
-        # On Linux/dev containers, mise should be pre-installed via feature
-        echo "ERROR: mise not found. In dev containers, add the mise feature to your devcontainer.json"
+    # Verify installation
+    if ! command -v mise &> /dev/null; then
+        echo "ERROR: mise installation failed"
         exit 1
     fi
+    echo "mise installed successfully"
 else
     echo "mise already installed"
 fi
