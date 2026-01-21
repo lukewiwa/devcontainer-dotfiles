@@ -1,0 +1,65 @@
+name: Test Installation
+
+on:
+  push:
+    branches: [ main, claude/* ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-install:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup zsh (Ubuntu only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh
+          # Create .zshrc if it doesn't exist
+          touch ~/.zshrc
+
+      - name: Setup zsh (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          # macOS comes with zsh, just ensure .zshrc exists
+          touch ~/.zshrc
+
+      - name: Run installation script
+        run: |
+          bash install.sh
+
+      - name: Verify mise is installed
+        run: |
+          export PATH="${HOME}/.local/bin:${PATH}"
+          mise --version
+
+      - name: Verify tools are installed
+        run: |
+          export PATH="${HOME}/.local/bin:${PATH}"
+          eval "$(mise activate bash)"
+          mise list
+
+      - name: Verify dotfiles are linked
+        run: |
+          test -L ~/.zsh_aliases && echo "✓ .zsh_aliases linked"
+          test -L ~/.gitconfig && echo "✓ .gitconfig linked"
+          test -L ~/.config/git/ignore && echo "✓ .gitignore_global linked"
+          test -L ~/.config/mise/config.toml && echo "✓ mise config linked"
+          test -L ~/.config/lazygit/config.yml && echo "✓ lazygit config linked"
+
+      - name: Verify zsh integration
+        run: |
+          if grep -q "dotfiles-setup" ~/.zshrc; then
+            echo "✓ zsh integration configured"
+          else
+            echo "✗ zsh integration not found"
+            exit 1
+          fi

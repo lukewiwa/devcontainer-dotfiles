@@ -1,8 +1,28 @@
-# devcontainer-dotfiles
+# dotfiles
 
-Personal dotfiles for dev containers. Uses [mise](https://mise.jdx.dev/).
+![Test Installation](https://github.com/lukewiwa/devcontainer-dotfiles/workflows/Test%20Installation/badge.svg)
 
-## Prerequisites
+Personal dotfiles for VS Code dev containers and macOS. Uses [mise](https://mise.jdx.dev/) for tool management.
+
+## macOS Setup
+
+On macOS, simply clone and run the install script:
+
+```bash
+git clone https://github.com/lukewiwa/devcontainer-dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./install.sh
+```
+
+The script will automatically:
+- Install mise if not already present
+- Install all tools defined in `.config/mise/config.toml`
+- Symlink dotfiles to your home directory
+- Configure your zsh shell
+
+## Dev Container Setup
+
+### Prerequisites
 
 Add these features to your VS Code user settings in `dev.containers.defaultFeatures`:
 
@@ -17,7 +37,7 @@ Add these features to your VS Code user settings in `dev.containers.defaultFeatu
 }
 ```
 
-## Setup
+### VS Code Dotfiles Integration
 
 Add this to your VS Code settings (user settings, not workspace):
 
@@ -41,6 +61,14 @@ Edit `.config/mise/config.toml` to add new tools:
 
 The `github` backend works with any tool that publishes binaries to GitHub releases. For tools not on GitHub, mise also supports `aqua` and `cargo` backends.
 
-### How it works
+## How it works
 
-The install script symlinks `.config/mise/config.toml` to `~/.config/mise/config.toml`, making it the **global mise config**. This means your tools are available in all projects and directories within the dev container, not just when you're in a specific project directory.
+The install script:
+1. Detects your operating system (macOS or Linux)
+2. Installs mise if not already present (on macOS via the official installer)
+3. Symlinks `.config/mise/config.toml` to `~/.config/mise/config.toml` as your **global mise config**
+4. Installs all tools defined in the config
+5. Symlinks dotfiles (`.gitconfig`, `.zsh_aliases`, etc.) to your home directory
+6. Configures zsh integration for mise and aliases
+
+Your tools are available globally in all projects and directories, not just in specific project directories.
