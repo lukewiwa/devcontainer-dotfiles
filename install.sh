@@ -3,12 +3,40 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "Installing devcontainer dotfiles..."
+echo "Installing dotfiles..."
 
-# Verify mise is installed (should be via dev container feature)
+# Detect OS
+OS="$(uname -s)"
+case "$OS" in
+    Darwin*)
+        OS_NAME="macOS"
+        ;;
+    Linux*)
+        OS_NAME="Linux"
+        ;;
+    *)
+        OS_NAME="Unknown"
+        ;;
+esac
+echo "Detected OS: $OS_NAME"
+
+# Install mise if not present
 if ! command -v mise &> /dev/null; then
-    echo "ERROR: mise not found. Add the mise feature to your devcontainer.json"
-    exit 1
+    echo "mise not found, installing..."
+    echo "Installing mise via official installer..."
+    curl https://mise.run | sh
+
+    # Add mise to PATH for current session
+    export PATH="${HOME}/.local/bin:${PATH}"
+
+    # Verify installation
+    if ! command -v mise &> /dev/null; then
+        echo "ERROR: mise installation failed"
+        exit 1
+    fi
+    echo "mise installed successfully"
+else
+    echo "mise already installed"
 fi
 
 # Link global mise config
@@ -52,7 +80,6 @@ link_file() {
     fi
 }
 
-link_file ".zsh_aliases"
 link_file ".gitconfig"
 link_file ".gitignore_global" ".config/git/ignore"
 link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
@@ -60,7 +87,7 @@ link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
 # Setup zsh integration
 setup_shell() {
     local shell_rc="${HOME}/.zshrc"
-    local marker="# devcontainer-dotfiles"
+    local marker="# dotfiles-setup"
 
     # Skip if already configured
     if grep -q "$marker" "$shell_rc" 2>/dev/null; then
@@ -71,14 +98,11 @@ setup_shell() {
     echo "Configuring zsh..."
     cat >> "$shell_rc" << EOF
 
-# devcontainer-dotfiles
+# dotfiles-setup
 export PATH="\${HOME}/.local/bin:\${PATH}"
 
-# mise
+# mise (provides tools, aliases, and environment)
 eval "\$(mise activate zsh)"
-
-# Aliases
-[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
 EOF
     echo "  Updated: $shell_rc"
 }
