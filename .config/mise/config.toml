@@ -8,3 +8,26 @@ just = "latest"
 lazydocker = "latest"
 lazygit = "latest"
 neovim = "latest"
+
+[shell_alias]
+# Neovim
+vim = "nvim"
+vi = "nvim"
+
+# lazygit & lazydocker
+lg = "lazygit"
+ld = "lazydocker"
+
+# fzf + bat (better file previewing)
+fzfp = 'fzf --preview "bat --color=always {}"'
+
+# jq pretty printing
+jq = "jq -C"
+
+# glow for markdown
+mdless = "glow"
+
+# Config shortcuts
+nvimcfg = "nvim ~/.config/nvim"
+zshcfg = "nvim ~/.zshrc"
+misecfg = "nvim ~/.config/mise/config.toml"

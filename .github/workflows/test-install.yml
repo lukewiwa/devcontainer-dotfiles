@@ -53,11 +53,20 @@ jobs:
 
       - name: Verify dotfiles are linked
         run: |
-          test -L ~/.zsh_aliases && echo "✓ .zsh_aliases linked"
           test -L ~/.gitconfig && echo "✓ .gitconfig linked"
           test -L ~/.config/git/ignore && echo "✓ .gitignore_global linked"
           test -L ~/.config/mise/config.toml && echo "✓ mise config linked"
           test -L ~/.config/lazygit/config.yml && echo "✓ lazygit config linked"
+
+      - name: Verify shell aliases are configured
+        run: |
+          export PATH="${HOME}/.local/bin:${PATH}"
+          if grep -q '\[shell_alias\]' ~/.config/mise/config.toml; then
+            echo "✓ Shell aliases configured in mise"
+          else
+            echo "✗ Shell aliases not found in mise config"
+            exit 1
+          fi
 
       - name: Verify zsh integration
         run: |

@@ -80,7 +80,6 @@ link_file() {
     fi
 }
 
-link_file ".zsh_aliases"
 link_file ".gitconfig"
 link_file ".gitignore_global" ".config/git/ignore"
 link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
@@ -102,11 +101,8 @@ setup_shell() {
 # dotfiles-setup
 export PATH="\${HOME}/.local/bin:\${PATH}"
 
-# mise
+# mise (provides tools, aliases, and environment)
 eval "\$(mise activate zsh)"
-
-# Aliases
-[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
 EOF
     echo "  Updated: $shell_rc"
 }

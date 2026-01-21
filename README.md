@@ -17,6 +17,7 @@ cd ~/.dotfiles
 The script will automatically:
 - Install mise if not already present
 - Install all tools defined in `.config/mise/config.toml`
+- Activate shell aliases defined in mise config
 - Symlink dotfiles to your home directory
 - Configure your zsh shell
 
@@ -52,16 +53,21 @@ Add this to your VS Code settings (user settings, not workspace):
 
 That's it. VS Code will clone and run the install script automatically when creating dev containers.
 
-## Adding tools
+## Adding tools and aliases
 
-Edit `.config/mise/config.toml` to add new tools:
+Edit `.config/mise/config.toml` to add new tools or shell aliases:
 
 ```toml
 [tools]
 "github:your-org/your-tool" = "latest"
+
+[shell_alias]
+myalias = "your-command here"
 ```
 
 The `github` backend works with any tool that publishes binaries to GitHub releases. For tools not on GitHub, mise also supports `aqua` and `cargo` backends.
+
+Shell aliases are automatically activated by `mise activate zsh` and support all shell syntax.
 
 ## How it works
 
@@ -70,8 +76,9 @@ The install script:
 2. Installs mise if not already present (via the official installer)
 3. Symlinks `.config/mise/config.toml` to `~/.config/mise/config.toml` as your **global mise config**
 4. Installs all tools defined in the config
-5. Symlinks dotfiles (`.gitconfig`, `.zsh_aliases`, etc.) to your home directory
-6. Configures zsh integration for mise and aliases
+5. Activates shell aliases defined in the mise config
+6. Symlinks dotfiles (`.gitconfig`, `.gitignore_global`, lazygit config) to your home directory
+7. Configures zsh integration with `mise activate`
 
 Your tools are available globally in all projects and directories, not just in specific project directories.
 
