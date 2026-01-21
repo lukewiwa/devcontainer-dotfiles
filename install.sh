@@ -20,14 +20,14 @@ case "$OS" in
 esac
 echo "Detected OS: $OS_NAME"
 
+# Ensure mise bin directory is in PATH
+export PATH="${HOME}/.local/bin:${PATH}"
+
 # Install mise if not present
 if ! command -v mise &> /dev/null; then
     echo "mise not found, installing..."
     echo "Installing mise via official installer..."
     curl https://mise.run | sh
-
-    # Add mise to PATH for current session
-    export PATH="${HOME}/.local/bin:${PATH}"
 
     # Verify installation
     if ! command -v mise &> /dev/null; then
