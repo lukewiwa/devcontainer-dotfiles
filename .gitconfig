@@ -2,7 +2,6 @@
 	defaultBranch = main
 
 [pull]
-	rebase = true
     ff = only
 
 [core]
@@ -21,6 +20,20 @@
     pup = push --set-upstream origin HEAD
     fap = fetch --all --prune
 	puf = push --force-with-lease
+
+	# Aliases with optional arguments
+	# Usage: git changed [branch] - show changed files vs branch (default dev)
+	changed = !git diff --name-only --diff-filter=d ${1:-dev} && :
+
+	# Usage: git last [n] - show last n commits (default 5)
+	last = !git log -n ${1:-5} --oneline && :
+
+	# Usage: git new <branch> [base] - create new branch from base (default HEAD)
+	new = !git checkout -b "$1" "${2:-HEAD}" && :
+
+	# Usage: git undo [n] - undo last n commits (default 1), keeping changes
+	undo = !git reset --soft HEAD~${1:-1} && :
+	
 
 [interactive]
 	diffFilter = delta --color-only
