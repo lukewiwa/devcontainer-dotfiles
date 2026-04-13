@@ -1,64 +1,25 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Installing dotfiles..."
 
-# Detect OS
-OS="$(uname -s)"
-case "$OS" in
-    Darwin*)
-        OS_NAME="macOS"
-        ;;
-    Linux*)
-        OS_NAME="Linux"
-        ;;
-    *)
-        OS_NAME="Unknown"
-        ;;
-esac
-echo "Detected OS: $OS_NAME"
 
-# Install mise if not present
-if ! command -v mise &> /dev/null; then
-    echo "mise not found, installing..."
-    echo "Installing mise via official installer..."
-    curl https://mise.run | sh
+echo "Homebrew not found, installing..."
+SHELL="/bin/zsh" NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    # Add mise to PATH for current session
-    export PATH="${HOME}/.local/bin:${PATH}"
 
-    # Verify installation
-    if ! command -v mise &> /dev/null; then
-        echo "ERROR: mise installation failed"
-        exit 1
-    fi
-    echo "mise installed successfully"
-else
-    echo "mise already installed"
-fi
 
-# Link global mise config
-echo "Linking mise config..."
-MISE_CONFIG="${HOME}/.config/mise/config.toml"
-mkdir -p "$(dirname "$MISE_CONFIG")"
-ln -sf "${SCRIPT_DIR}/.config/mise/config.toml" "$MISE_CONFIG"
-echo "  Linked: $MISE_CONFIG"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
-# Trust mise config file (suppress warning if already trusted)
-echo "Trusting mise config..."
-mise trust 2>&1 | grep -v "No untrusted config files found" || true
-
-# Install tools from global mise config
-echo "Installing tools via mise..."
-mise install --yes
-# Activate for current shell session
-eval "$(mise activate bash)"
+# Install tools from Brewfile
+echo "Installing tools via Brewfile..."
+brew bundle --file="${SCRIPT_DIR}/Brewfile"
 
 # Install just completions
 echo "Installing just completions..."
-if command -v just &> /dev/null; then
+if command -v just >/dev/null 2>&1; then
     mkdir -p "${HOME}/.oh-my-zsh/completions"
     just --completions zsh > "${HOME}/.oh-my-zsh/completions/_just"
 else
@@ -81,6 +42,7 @@ link_file() {
 
 link_file ".gitignore_global" ".config/git/ignore"
 link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
+link_file ".config/zsh/dotfiles.zsh" ".config/zsh/dotfiles.zsh"
 
 setup_repo_local_files() {
     local repo_root
@@ -88,7 +50,7 @@ setup_repo_local_files() {
     local just_dest
     local gitconfig_src="${SCRIPT_DIR}/.gitconfig"
 
-    if ! command -v git &> /dev/null; then
+    if ! command -v git >/dev/null 2>&1; then
         echo "Git not found, skipping repo-local setup"
         return
     fi
@@ -123,22 +85,23 @@ setup_shell() {
     local shell_rc="${HOME}/.zshrc"
     local marker="# dotfiles-setup"
 
+    touch "$shell_rc"
+
     # Remove existing dotfiles block if present
     if grep -q "$marker" "$shell_rc" 2>/dev/null; then
         sed -i.bak "/$marker/,/^# end dotfiles-setup$/d" "$shell_rc"
     fi
 
     echo "Configuring zsh..."
-    cat >> "$shell_rc" << EOF
+    cat >> "$shell_rc" << 'EOF'
 
 # dotfiles-setup
-export PATH="\${HOME}/.local/bin:\${PATH}"
-
-# mise (provides tools, aliases, and environment)
-eval "\$(mise activate zsh)"
-
+source "$HOME/.config/zsh/dotfiles.zsh"
+# end dotfiles-setup
+EOF
+}
 
 setup_shell
 
-echo "Done! Tools installed:"
-mise list
+echo "Done! Installed Homebrew packages:"
+brew list --formula
