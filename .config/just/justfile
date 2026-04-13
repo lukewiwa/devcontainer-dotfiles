@@ -1,4 +1,4 @@
-# Global justfile - invoke with `wust` (just -g) from any directory
+# Template justfile copied to repo root as .justfile
 
 wiwa:
     @echo "wiwa!"
