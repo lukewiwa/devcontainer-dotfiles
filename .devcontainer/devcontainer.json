@@ -1,6 +1,6 @@
 {
     "name": "Dev Container Dotfiles",
-    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "image": "debian:bookworm-slim",
     "customizations": {
         "vscode": {
             "settings": {
