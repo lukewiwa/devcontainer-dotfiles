@@ -20,8 +20,9 @@ brew bundle --file="${SCRIPT_DIR}/Brewfile"
 # Install just completions
 echo "Installing just completions..."
 if command -v just >/dev/null 2>&1; then
-    mkdir -p "${HOME}/.oh-my-zsh/completions"
-    just --completions zsh > "${HOME}/.oh-my-zsh/completions/_just"
+    completions_dir="${HOME}/.zsh/completions"
+    mkdir -p "$completions_dir"
+    just --completions zsh > "${completions_dir}/_just"
 else
     echo "  just not found, skipping completions"
 fi

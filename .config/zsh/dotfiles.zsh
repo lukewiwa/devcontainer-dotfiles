@@ -1,5 +1,10 @@
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
+# Load custom zsh completions (including just) from the user completion directory.
+fpath=("$HOME/.zsh/completions" $fpath)
+autoload -U compinit
+compinit
+
 # Neovim
 alias vim="nvim"
 alias vi="nvim"
