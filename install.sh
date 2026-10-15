@@ -104,5 +104,26 @@ EOF
 
 setup_shell
 
+# Make zsh the login shell so terminals (and Claude's shell) pick up the dotfiles
+set_default_shell() {
+    local zsh_path
+    zsh_path="$(grep -m1 '/zsh$' /etc/shells 2>/dev/null || true)"
+
+    if [ -z "$zsh_path" ]; then
+        echo "No zsh listed in /etc/shells, leaving default shell unchanged"
+        return
+    fi
+
+    if [ "$(getent passwd "$(id -un)" | cut -d: -f7)" = "$zsh_path" ]; then
+        echo "Default shell already ${zsh_path}"
+    elif sudo -n chsh -s "$zsh_path" "$(id -un)" 2>/dev/null; then
+        echo "Default shell set to ${zsh_path}"
+    else
+        echo "Could not change default shell (no passwordless sudo?), leaving it unchanged"
+    fi
+}
+
+set_default_shell
+
 echo "Done! Installed Homebrew packages:"
 brew list --formula
