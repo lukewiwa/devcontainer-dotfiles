@@ -1,6 +1,6 @@
 # Wiwa's dotfiles
 
-Personal dotfiles for Debian-based VS Code dev containers. Uses Homebrew + Brewfile for tool management.
+Personal dotfiles for Debian-based VS Code dev containers: shell aliases and tool config only.
 
 ## Setup
 
@@ -22,26 +22,17 @@ VS Code will clone and run the install script automatically when creating dev co
 
 ## What gets installed
 
-Tools are installed from [Brewfile](Brewfile) via `brew bundle`.
-Homebrew installation and dependency checks are handled by the official Homebrew installer.
-
-Current packages:
-
-- bat
-- delta
-- fzf
-- glow
-- jq
-- just
-- lazydocker
-- lazygit
-- neovim
+Nothing. Tools (Homebrew packages via `ghcr.io/lukewiwa/debian-features/homebrew-packages`, zsh as the
+default shell via `common-utils`) are devcontainer features, listed in the host dotfiles'
+`.config/devcontainer/defaults.json` and applied by VS Code (`dev.containers.defaultFeatures`) and `wust dc-up`.
 
 Shell init and aliases are managed in `.config/zsh/dotfiles.zsh` and sourced from `~/.zshrc` by the installer.
 
 ## Repo-local behavior in dev containers
 
-This setup is designed for dev containers and avoids global Just/Git config:
+This setup is designed for dev containers and avoids global Just config:
 
 - Copies a template justfile to `.justfile` in the current repo root only if `.justfile` does not already exist.
-- Configures Git for the current repo by adding a local include for this dotfiles repo `.gitconfig` (stored in `.git/config`).
+
+Git config isn't set here. It comes from the host: VS Code's `dev.containers.copyGitConfig` (or `wust dc-up`)
+copies `~/.gitconfig` in, and each repo's identity and SSH key are pinned in its `.git` dir with `wust git-pin`.

@@ -6,16 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "Installing dotfiles..."
 
 
-echo "Homebrew not found, installing..."
-SHELL="/bin/zsh" NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
-
-# Install tools from Brewfile
-echo "Installing tools via Brewfile..."
-brew bundle --file="${SCRIPT_DIR}/Brewfile"
+# Tools (Homebrew packages, zsh) come from devcontainer features listed in the
+# host dotfiles' .config/devcontainer/defaults.json, not from this script.
 
 # Install just completions
 echo "Installing just completions..."
@@ -49,7 +41,6 @@ setup_repo_local_files() {
     local repo_root
     local just_src="${SCRIPT_DIR}/.config/just/justfile"
     local just_dest
-    local gitconfig_src="${SCRIPT_DIR}/.gitconfig"
 
     if ! command -v git >/dev/null 2>&1; then
         echo "Git not found, skipping repo-local setup"
@@ -70,14 +61,10 @@ setup_repo_local_files() {
         cp "$just_src" "$just_dest"
         echo "  Copied: $just_dest"
     fi
-
-    if git -C "$repo_root" config --local --get-all include.path | grep -Fxq "$gitconfig_src"; then
-        echo "  Local git include already configured"
-    else
-        git -C "$repo_root" config --local --add include.path "$gitconfig_src"
-        echo "  Added local git include: $gitconfig_src"
-    fi
 }
+
+# Git config comes from the host: VS Code's dev.containers.copyGitConfig (or `wust dc-up`)
+# copies ~/.gitconfig in, and each repo's identity is pinned in its own .git by `wust git-pin`.
 
 setup_repo_local_files
 
@@ -104,26 +91,4 @@ EOF
 
 setup_shell
 
-# Make zsh the login shell so terminals (and Claude's shell) pick up the dotfiles
-set_default_shell() {
-    local zsh_path
-    zsh_path="$(grep -m1 '/zsh$' /etc/shells 2>/dev/null || true)"
-
-    if [ -z "$zsh_path" ]; then
-        echo "No zsh listed in /etc/shells, leaving default shell unchanged"
-        return
-    fi
-
-    if [ "$(getent passwd "$(id -un)" | cut -d: -f7)" = "$zsh_path" ]; then
-        echo "Default shell already ${zsh_path}"
-    elif sudo -n chsh -s "$zsh_path" "$(id -un)" 2>/dev/null; then
-        echo "Default shell set to ${zsh_path}"
-    else
-        echo "Could not change default shell (no passwordless sudo?), leaving it unchanged"
-    fi
-}
-
-set_default_shell
-
-echo "Done! Installed Homebrew packages:"
-brew list --formula
+echo "Done!"
