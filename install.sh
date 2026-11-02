@@ -68,6 +68,17 @@ setup_repo_local_files() {
 
 setup_repo_local_files
 
+# Claude Code skills, shared with the host. Public, so https needs no auth.
+# Cloned outside ~/.claude, which is a per-project volume, so every container gets a fresh copy.
+claude_config="${HOME}/.claude-config"
+if [ -d "${claude_config}/.git" ]; then
+    git -C "$claude_config" pull --ff-only || echo "  Couldn't update claude-config, using existing copy"
+else
+    git clone https://github.com/lukewiwa/claude-config.git "$claude_config" \
+        || echo "  Couldn't clone claude-config, skipping"
+fi
+[ -x "${claude_config}/install.sh" ] && "${claude_config}/install.sh"
+
 # Setup zsh integration
 setup_shell() {
     local shell_rc="${HOME}/.zshrc"

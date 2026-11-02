@@ -28,6 +28,11 @@ default shell via `common-utils`) are devcontainer features, listed in the host 
 
 Shell init and aliases are managed in `.config/zsh/dotfiles.zsh` and sourced from `~/.zshrc` by the installer.
 
+## Claude Code config
+
+The installer clones [claude-config](https://github.com/lukewiwa/claude-config) to `~/.claude-config` and
+links its skills into `~/.claude/skills`, the same as on the host.
+
 ## Repo-local behavior in dev containers
 
 This setup is designed for dev containers and avoids global Just config:
