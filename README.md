@@ -40,4 +40,14 @@ This setup is designed for dev containers and avoids global Just config:
 - Copies a template justfile to `.justfile` in the current repo root only if `.justfile` does not already exist.
 
 Git config isn't set here. It comes from the host: VS Code's `dev.containers.copyGitConfig` (or `wust dc-up`)
-copies `~/.gitconfig` in, and each repo's identity and SSH key are pinned in its `.git` dir with `wust git-pin`.
+copies `~/.gitconfig` in. Inside a container, pick which forwarded agent key and email a repo uses with:
+
+```bash
+git account                  # fzf over the agent's keys; email = key comment
+git account wsp.com          # non-interactive: the key whose line matches
+git account gmail --email luke.wiwatowski@wsp.com   # wsp-digital: personal key, WSP email
+```
+
+It writes `.git/account.pub` + `.git/account.gitconfig` (included last in `.git/config`, so it beats older
+pins) and accepts new host keys, so the first push works without a `known_hosts`. `.git` is shared with the
+host, so the host repo picks it up too.

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Pick which forwarded ssh-agent key (and commit email) this repo uses: `git account [filter] [--email addr]`.
+# Writes .git/account.pub + .git/account.gitconfig and includes it last in .git/config, so it wins over
+# anything older there. .git is shared with the host, so the host repo uses the same account too.
+set -euo pipefail
+
+usage() { echo "usage: git account [key filter, e.g. wsp.com] [--email addr]" >&2; exit 2; }
+
+filter="" email=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --email) [[ $# -ge 2 ]] || usage; email="$2"; shift 2 ;;
+        -h|--help) usage ;;
+        *) [[ -z "$filter" ]] || usage; filter="$1"; shift ;;
+    esac
+done
+
+# dc-up mounts the agent at /ssh-agent; VS Code sets SSH_AUTH_SOCK itself
+[[ -n "${SSH_AUTH_SOCK:-}" || ! -S /ssh-agent ]] || export SSH_AUTH_SOCK=/ssh-agent
+keys=$(ssh-add -L 2>/dev/null) || { echo "No keys in the ssh-agent (run \`wust git-load-keys\` on the host)" >&2; exit 1; }
+
+[[ -z "$filter" ]] || keys=$(grep -iF -- "$filter" <<<"$keys") || { echo "No agent key matches '$filter'" >&2; exit 1; }
+if [[ $(wc -l <<<"$keys") -eq 1 ]]; then
+    key="$keys"
+elif command -v fzf >/dev/null; then
+    key=$(fzf --prompt "SSH key for $(git remote get-url origin 2>/dev/null || pwd)> " --with-nth 3.. <<<"$keys") || exit 1
+else
+    mapfile -t list <<<"$keys"
+    for i in "${!list[@]}"; do echo "$((i + 1))) $(cut -d' ' -f3- <<<"${list[$i]}")"; done
+    read -rp "Key: " n </dev/tty
+    key="${list[$((n - 1))]:?invalid choice}"
+fi
+
+# Key comments are the account email; --email covers keys shared across identities
+[[ -n "$email" ]] || email=$(cut -d' ' -f3- <<<"$key")
+git_dir=$(git rev-parse --path-format=absolute --git-common-dir)
+echo "$key" >"$git_dir/account.pub"
+cfg="$git_dir/account.gitconfig"
+rm -f "$cfg"
+git config -f "$cfg" user.name "${GIT_ACCOUNT_NAME:-Luke Wiwatowski}"
+git config -f "$cfg" user.email "$email"
+# The SSH_AUTH_SOCK fallback covers shells that didn't come through VS Code or dc-sh (plain docker exec)
+git config -f "$cfg" core.sshCommand 'SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-/ssh-agent}" ssh -i "$(git rev-parse --path-format=absolute --git-common-dir)/account.pub" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new'
+
+# Re-append the include so it stays last in .git/config
+git config --local --fixed-value --unset-all include.path account.gitconfig 2>/dev/null || true
+printf '[include]\n\tpath = account.gitconfig\n' >>"$git_dir/config"
+
+echo "Using $email with key $(cut -d' ' -f3- <<<"$key")"
+if remote=$(git remote get-url origin 2>/dev/null); then
+    git ls-remote origin HEAD >/dev/null && echo "origin OK: $remote" || echo "origin rejected this key: $remote" >&2
+fi

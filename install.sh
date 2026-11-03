@@ -36,6 +36,7 @@ link_file() {
 link_file ".gitignore_global" ".config/git/ignore"
 link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
 link_file ".config/zsh/dotfiles.zsh" ".config/zsh/dotfiles.zsh"
+link_file "bin/git-account" ".local/bin/git-account"
 
 setup_repo_local_files() {
     local repo_root
@@ -64,7 +65,7 @@ setup_repo_local_files() {
 }
 
 # Git config comes from the host: VS Code's dev.containers.copyGitConfig (or `wust dc-up`)
-# copies ~/.gitconfig in, and each repo's identity is pinned in its own .git by `wust git-pin`.
+# copies ~/.gitconfig in. Pick a repo's account (agent key + email) with `git account`, here or via `wust git-pin`.
 
 setup_repo_local_files
 

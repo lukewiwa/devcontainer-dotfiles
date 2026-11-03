@@ -1,3 +1,6 @@
+# git-account etc. from install.sh
+path=("$HOME/.local/bin" $path)
+
 # Load custom zsh completions (including just) from the user completion directory.
 fpath=("$HOME/.zsh/completions" $fpath)
 autoload -U compinit
